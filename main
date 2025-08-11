@@ -1,0 +1,99 @@
+from typing import Final
+from telegram import Update
+from telegram.ext import Application
+from telegram.ext import MessageHandler, filters
+from telegram.ext import CommandHandler
+from telegram.ext import ContextTypes
+
+
+import telegram.ext
+
+TOKEN: Final ='8316287600:AAFkdGOrW9w74vaQyzm95mSrPDTAqx9Nycg'
+BOT_USERNAME: Final = '@anabrnabic_bot'
+
+dizajneri = []
+koordinatori = []
+
+async def start_command(update: Update, context:ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('LACAMATILACAMATILACAMATI')
+
+async def dizajneri_command(update: Update, context:ContextTypes.DEFAULT_TYPE):
+  text: str = update.message.text
+  await update.message.reply_text('dizajneri assemble')
+
+async def koordinatori_command(update: Update, context:ContextTypes.DEFAULT_TYPE):
+  await update.message.reply_text('koordinatori')
+
+async def admini_command(update: Update, context:ContextTypes.DEFAULT_TYPE):
+  await update.message.reply_text('admini ')
+
+
+#async def dodaj_dizajnere(update: Update, context: ContextTypes.DEFAULT_TYPE):
+#    user = update.effective_user
+#    if user.username:
+#        if user.username not in usernames:
+#            dizajneri.append(user.username)
+#            await update.message.reply_text(f"Added @{user.username} to the list!")
+#        else:
+#            await update.message.reply_text(f"@{user.username} is already in the list.")
+#    else:
+#        await update.message.reply_text("You don't have a username set.")
+#
+#    await update.message.reply_text(f"Usernames so far: {', '.join(usernames)}")
+
+def handle_response(text: str) -> str:
+    processed: str = text.lower()
+
+    if 'blokader' in text:
+        return ('teroristi \n haha u sustini kontrolises me tako sto me tagujes'
+                'i onda na kraju poruke napises \n'
+                '/dizajneri ili /koordinatori ili /admini u zavisnosti od tvoje potrebe')
+    if '/dizajneri' in text:
+        new_text: str = text.replace("/dizajneri" , '').strip()
+        return (' \n' + new_text)
+    if '/koordinatori' in text:
+        new_text: str = text.replace("/koordinatori", '').strip()
+        return (' \n' + new_text)
+    if '/admini' in text:
+        new_text: str = text.replace("/admini", '').strip()
+        return ('\n' + new_text)
+
+    return none
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    message_type: str = update.message.chat.type
+    text: str = update.message.text
+
+    print(f'')
+
+    if message_type == 'group':
+        if BOT_USERNAME in text:
+            if text == BOT_USERNAME:
+                await update.message.reply_text("LACA MATI \n ja sam bot koji taguje ljude \n za pocetak taguj me i napisi \"blokaderi\" ")
+            new_text: str = text.replace(BOT_USERNAME, '').strip()
+            response: str = handle_response(new_text)
+        else:
+            return
+    else:
+        response: str = handle_response(text)
+
+    print('Bot:',response)
+    await update.message.reply_text(response)
+
+async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print(f'maca late error')
+
+if __name__ == '__main__':
+    print('pocinjem da kradem')
+    app = Application.builder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler('start', start_command))
+    app.add_handler(CommandHandler('dizajneri', dizajneri_command))
+    app.add_handler(CommandHandler('koordinatori', koordinatori_command))
+    app.add_handler(CommandHandler('admini', admini_command))
+
+    app.add_handler(MessageHandler(filters.TEXT, handle_message))
+
+    app.add_error_handler(error)
+    print('AAAAAAAAAAAAAAA')
+    app.run_polling(poll_interval=3)
