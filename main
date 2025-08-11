@@ -8,7 +8,7 @@ from telegram.ext import ContextTypes
 
 import telegram.ext
 
-TOKEN: Final ='8316287600:AAFkdGOrW9w74vaQyzm95mSrPDTAqx9Nycg'
+TOKEN: Final =''
 BOT_USERNAME: Final = '@anabrnabic_bot'
 
 dizajneri = []
